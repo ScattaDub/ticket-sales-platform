@@ -56,7 +56,9 @@ the database design stage.
 ```
 .
 ├── db/
-│   └── schema.sql        # Database schema (current focus)
+│   ├── schema.sql        # Tables, types, indexes (current focus)
+│   ├── seed.sql          # Sample data
+│   └── queries.sql       # Example analytical queries
 └── README.md
 ```
 
@@ -71,3 +73,5 @@ psql -d ticket_sales -f db/schema.sql
 ---
 
 *This is a learning + portfolio project, developed openly. Feedback welcome.*
+
+

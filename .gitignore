@@ -10,7 +10,7 @@ build/
 out/
 
 # Environment variables / secrets
-.env
+experiments/.env
 .env.local
 .env.*.local
 .env.development

@@ -1,0 +1,26 @@
+{
+  "name": "experiments",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@types/pdfkit": "^0.17.6",
+    "dotenv": "^17.4.2",
+    "pdfkit": "^0.19.1",
+    "pg": "^8.22.0",
+    "pg-query-stream": "^4.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "@types/pg": "^8.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}

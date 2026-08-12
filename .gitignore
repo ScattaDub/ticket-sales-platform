@@ -55,3 +55,6 @@ desktop.ini
 .cache/
 tmp/
 temp/
+
+# Claude
+CLAUDE.md

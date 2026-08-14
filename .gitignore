@@ -56,5 +56,9 @@ desktop.ini
 tmp/
 temp/
 
+# Output of the week 2 experiment scripts — regenerate by running them
+experiments/participants.csv
+experiments/ticket-*.pdf
+
 # Claude
 CLAUDE.md

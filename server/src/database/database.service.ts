@@ -8,7 +8,7 @@ export class DatabaseService implements OnModuleDestroy {
 
   constructor(@Inject(DB_POOL) private readonly pool: Pool) {}
 
-  query<T extends QueryResultRow>(
+  query<T extends QueryResultRow = QueryResultRow>(
     text: string,
     params?: unknown[],
   ): Promise<QueryResult<T>> {

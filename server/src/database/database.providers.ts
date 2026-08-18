@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
-import { Env } from '../config/env.validation';
+import { Env } from '@/config/env.validation';
 
 export const DB_POOL = 'DB_POOL';
 

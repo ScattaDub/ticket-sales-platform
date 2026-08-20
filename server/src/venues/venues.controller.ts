@@ -19,8 +19,6 @@ import { Venue } from './entities/venue.entity';
 export class VenuesController {
   constructor(private readonly venuesService: VenuesService) {}
 
-  // Nest answers 201 for POST by default, which is what a created resource
-  // should return.
   @Post()
   create(@Body() createVenueDto: CreateVenueDto): Promise<Venue> {
     return this.venuesService.create(createVenueDto);
@@ -31,9 +29,6 @@ export class VenuesController {
     return this.venuesService.findAll();
   }
 
-  // ParseIntPipe turns a non-numeric id into a clean 400 before the service is
-  // ever reached; without it the garbage would travel into SQL and surface as
-  // a 500.
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number): Promise<Venue> {
     return this.venuesService.findOne(id);
@@ -47,8 +42,6 @@ export class VenuesController {
     return this.venuesService.update(id, updateVenueDto);
   }
 
-  // Nest would answer 200 with an empty body here, but a successful delete has
-  // nothing to say — 204 does.
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

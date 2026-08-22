@@ -4,9 +4,10 @@ A portfolio project: a ticket sales / event booking platform built to demonstrat
 production-minded backend and database design. **Work in progress** — the database
 layer is complete and the REST API is being built resource by resource.
 
-> ⚠️ **Status:** Active development. Schema, seed data and two API resources
-> (`venues`, `categories`) are done; `events`, auth and the ordering flow are next.
-> The repo is intentionally public so the design can be reviewed as it grows.
+> ⚠️ **Status:** Active development. Schema, seed data and three API resources
+> (`venues`, `categories`, `events`) are done; error handling, auth and the
+> ordering flow are next. The repo is intentionally public so the design can be
+> reviewed as it grows.
 
 ## Stack
 
@@ -61,17 +62,44 @@ Nine tables covering the core domain:
 Implemented so far. Every endpoint validates its input; unknown body properties
 are rejected rather than silently dropped.
 
+Three resources — `/venues`, `/categories`, `/events` — all follow the same shape:
+
 | Method | Route | Notes |
 |---|---|---|
-| `GET` | `/venues`, `/categories` | list |
-| `GET` | `/venues/:id`, `/categories/:id` | `404` when missing |
-| `POST` | `/venues`, `/categories` | `201`; category `slug` is generated from `name` |
-| `PATCH` | `/venues/:id`, `/categories/:id` | partial update; an empty body is a `400` |
-| `DELETE` | `/venues/:id`, `/categories/:id` | `204`, or `404` when missing |
+| `GET` | `/{resource}` | list |
+| `GET` | `/{resource}/:id` | `404` when missing, `400` for a non-numeric id |
+| `POST` | `/{resource}` | `201` |
+| `PATCH` | `/{resource}/:id` | partial update; an empty body is a `400` |
+| `DELETE` | `/{resource}/:id` | `204`, or `404` when missing |
 
 A category's `slug` is generated once on creation and is **not** recalculated when
 the category is renamed: it is part of the public URL, which makes it an
 identifier rather than a display name.
+
+### `/events`
+
+The first resource complex enough to need more than a straight column mapping.
+
+- **Server-owned fields are not writable.** `status` cannot be set at creation —
+  every event starts as a `draft` — and `published_at` is rejected outright,
+  because a client should not get to decide when something was published.
+- **`published_at` is stamped on the first transition to `published` only.**
+  Publishing again, or unpublishing and publishing once more, leaves the original
+  date alone. It is written as `published_at = COALESCE(published_at, now())`:
+  the right-hand side of an `UPDATE` reads the old row, so there is no window
+  between reading the value and writing it.
+- **`PATCH` builds its `UPDATE` from the fields actually sent**, rather than
+  `COALESCE($n, column)` for every column. That is what makes
+  `{"description": null}` mean *clear this field* instead of *leave it as it was* —
+  the two are indistinguishable once a missing field and an explicit `null` are
+  collapsed into the same parameter.
+- **Timestamps must carry a UTC offset.** `2026-12-01T19:00:00` is rejected;
+  `2026-12-01T19:00:00Z` is accepted. An instant without an offset is ambiguous,
+  and guessing the server's zone is how events end up three hours off.
+- **The time window is validated as a pair.** `endsAt` must be strictly later
+  than `startsAt`, and sending only one of the two is a `400`: shifting the end
+  of an event without knowing its start is not a partial update, it is a
+  half-formed one.
 
 ## Repository structure
 
@@ -119,8 +147,9 @@ curl localhost:3000/venues
 - [x] SQL test scenarios on local PostgreSQL
 - [x] NestJS module structure, configuration and connection pooling
 - [x] REST API for `venues` and `categories`, with request validation
-- [ ] REST API for `events` (foreign keys, status lifecycle, date ranges)
+- [x] REST API for `events` (foreign keys, status lifecycle, date ranges)
 - [ ] Postgres error mapping (constraint violations → `409` instead of `500`)
+      and field-keyed validation errors
 - [ ] OpenAPI/Swagger documentation
 - [ ] Authentication & authorization
 - [ ] Orders / checkout flow with concurrency-safe inventory

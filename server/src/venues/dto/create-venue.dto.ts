@@ -1,8 +1,9 @@
-import { IsInt, IsString, Min, MinLength } from 'class-validator';
+import { IsInt, IsString, MaxLength, Min, MinLength } from 'class-validator';
 
 export class CreateVenueDto {
   @IsString()
   @MinLength(1)
+  @MaxLength(50)
   name!: string;
 
   @IsString()

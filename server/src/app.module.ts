@@ -4,6 +4,7 @@ import { DatabaseModule } from './database/database.module';
 import { validateEnv } from './config/env.validation';
 import { VenuesModule } from './venues/venues.module';
 import { CategoriesModule } from './categories/categories.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CategoriesModule } from './categories/categories.module';
     DatabaseModule,
     VenuesModule,
     CategoriesModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
